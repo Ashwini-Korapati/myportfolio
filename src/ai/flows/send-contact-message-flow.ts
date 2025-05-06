@@ -6,6 +6,11 @@
  * - sendContactMessage - A function that processes the contact message.
  * - SendContactMessageInput - The input type for the sendContactMessage function.
  * - SendContactMessageOutput - The return type for the sendContactMessage function.
+ *
+ * IMPORTANT: This flow currently SIMULATES sending a message.
+ * It generates a confirmation using AI but DOES NOT actually send an email.
+ * To send a real email, you would need to integrate an email service
+ * (e.g., Nodemailer, SendGrid, Resend) within this flow.
  */
 
 import {ai} from '@/ai/genkit';
@@ -55,6 +60,17 @@ const sendContactMessageFlow = ai.defineFlow(
     outputSchema: SendContactMessageOutputSchema,
   },
   async (input: SendContactMessageInput) => {
+    // Log the received contact message details to the server console.
+    // This is where you can "see" the user's response on the server side.
+    // This does NOT send an email.
+    console.log('New contact message received:');
+    console.log('Name:', input.name);
+    console.log('Email:', input.email);
+    console.log('Message:', input.messageBody);
+    console.log('---');
+    console.log('Reminder: This flow SIMULATES email sending. To receive actual emails, integrate an email service.');
+
+
     try {
       const {output} = await prompt(input);
       if (!output || !output.confirmationMessage) {
@@ -79,3 +95,4 @@ const sendContactMessageFlow = ai.defineFlow(
     }
   }
 );
+
