@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Handles sending contact messages, simulating forwarding to WhatsApp.
@@ -44,8 +45,10 @@ const prompt = ai.definePrompt({
     "{{messageBody}}"
 
     Please generate a polite confirmation message acknowledging receipt of their message.
-    The message should inform the user that their message has been successfully received and will be forwarded to the site owner via WhatsApp to the number +919513035255.
-    Inform the user that a response will be provided if needed.
+    The message should inform the user that their message has been successfully received.
+    IMPORTANTLY, state that the process to forward this to the site owner via WhatsApp to the number +919513035255 is CURRENTLY A SIMULATION.
+    Mention that this means a real WhatsApp message is NOT being sent at this moment, but their message is recorded.
+    Inform the user that a response will be provided if needed once the site owner reviews the recorded message.
     Ensure the tone is professional and friendly.
     Set the status output field to "success".
   `,
@@ -59,24 +62,26 @@ const sendContactMessageFlow = ai.defineFlow(
   },
   async (input: SendContactMessageInput) => {
     const targetWhatsAppNumber = '+919513035255'; // User-specified WhatsApp number
+    const targetEmail = 'aashv143@gmail.com'; // Target email for receiving messages
 
     // Log the received contact message details to the server console.
-    // This SIMULATES forwarding the message to WhatsApp.
+    // This SIMULATES forwarding the message to WhatsApp and email.
     console.log('Contact form submission received:');
     console.log('From Name:', input.name);
     console.log('From Email:', input.email);
     console.log('Message:', input.messageBody);
     console.log(`SIMULATING forwarding message to WhatsApp: ${targetWhatsAppNumber}`);
+    console.log(`SIMULATING sending message to email: ${targetEmail}`);
     console.log('---');
-    console.log('Reminder: This flow SIMULATES WhatsApp sending. To send actual WhatsApp messages, integrate a WhatsApp API service (e.g., Twilio, Meta Business API).');
-
+    console.log('Reminder: This flow SIMULATES WhatsApp and Email sending. To send actual messages, integrate appropriate API services (e.g., Twilio, Meta Business API for WhatsApp; SendGrid, Mailgun for email).');
+    console.log('User responses are logged to the server console. Check your server logs to see the "user response".');
 
     try {
       const {output} = await prompt(input);
       if (!output || !output.confirmationMessage) {
         console.warn('SendContactMessageFlow: Prompt did not return expected output, using fallback.');
         return {
-            confirmationMessage: `Thank you for your message, ${input.name}. We have received it and will forward it to be reviewed. We'll get back to you if a response is needed.`,
+            confirmationMessage: `Thank you for your message, ${input.name}. We have received it and it has been recorded. This is a simulated notification process. We'll get back to you if a response is needed.`,
             status: "success"
         };
       }
