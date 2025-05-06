@@ -44,7 +44,7 @@ export default function HeroSection() {
             alt="Ashwini M Profile Picture"
             width={450}
             height={450}
-            className="rounded-full mx-auto shadow-2xl relative z-10 object-cover transition-transform duration-500 transform scale-110 blur-sm"
+            className="rounded-full mx-auto shadow-2xl relative z-10 object-cover transition-transform duration-500 transform scale-110"
             style={{ objectPosition: 'top' }}
             data-ai-hint="professional portrait"
             priority
@@ -54,3 +54,4 @@ export default function HeroSection() {
     </section>
   );
 }
+
