@@ -56,10 +56,20 @@ const sendContactMessageFlow = ai.defineFlow(
     outputSchema: SendContactMessageOutputSchema,
   },
   async (input: SendContactMessageInput) => {
-    // In a real application, you would integrate with an email service here
-    // to send the actual email to korapatiashwini@gmail.com.
-    // For example, using a service like SendGrid, Nodemailer, or AWS SES.
-    // console.log(`Simulating sending email to korapatiashwini@gmail.com with data:`, input);
+    // **IMPORTANT: Email Sending Simulation**
+    // The following console.log simulates sending an email.
+    // In a real-world application, you would replace this with actual email sending logic
+    // using a service like SendGrid, Nodemailer with an SMTP provider, AWS SES, or a Firebase Extension.
+    // This functionality is NOT currently implemented beyond this simulation.
+    console.log('\n--- SIMULATING EMAIL SEND ---');
+    console.log(`Timestamp: ${new Date().toISOString()}`);
+    console.log('Recipient: korapatiashwini@gmail.com');
+    console.log('Sender Name:', input.name);
+    console.log('Sender Email:', input.email);
+    console.log('Message Body:\n', input.messageBody);
+    console.log('--- END OF EMAIL SIMULATION ---\n');
+    console.log('NOTE: To send actual emails, integrate an email service provider here.');
+
 
     const {output} = await contactPrompt(input);
     if (!output) {
@@ -69,3 +79,4 @@ const sendContactMessageFlow = ai.defineFlow(
     return output;
   }
 );
+
