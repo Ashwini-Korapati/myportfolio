@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Download, Linkedin, Send } from 'lucide-react';
@@ -43,9 +42,10 @@ export default function HeroSection() {
           <Image
             src="/resume/ashwini-img.jpg" 
             alt="Ashwini M Profile Picture"
-            width={400}
-            height={400}
-            className="rounded-full mx-auto shadow-2xl relative z-10 object-cover"
+            width={450}
+            height={450}
+            className="rounded-full mx-auto shadow-2xl relative z-10 object-cover transition-transform duration-500 transform scale-110 blur-sm"
+            style={{ objectPosition: 'top' }}
             data-ai-hint="professional portrait"
             priority
           />
@@ -54,4 +54,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
