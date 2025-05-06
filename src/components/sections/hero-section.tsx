@@ -41,7 +41,7 @@ export default function HeroSection() {
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-pink-600 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
           <Image
-            src="https://picsum.photos/seed/new-profile-photo/400/400"
+            src="/resume/ashwini-img.jpg" 
             alt="Ashwini M Profile Picture"
             width={400}
             height={400}
