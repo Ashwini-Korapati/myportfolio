@@ -7,7 +7,7 @@ const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
 
 export default function HeroSection() {
   return (
-    <section id="home" className="py-20 md:py-32 bg-background">
+    <section id="home" className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-6 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -37,14 +37,14 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="relative group">
+        <div className="relative group w-80 h-80">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-pink-600 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
           <Image
             src="/resume/ashwini-img_1.png"
             alt="Ashwini M Profile Picture"
-            width={450}
-            height={450}
+            fill
+            style={{ objectFit: 'cover' }}
             className="rounded-full mx-auto shadow-2xl relative z-10 object-cover transition-transform duration-500 transform scale-110"
-            style={{ objectPosition: 'top' }}
             data-ai-hint="professional portrait"
             priority
           />
@@ -53,3 +53,4 @@ export default function HeroSection() {
     </section>
   );
 }
+
