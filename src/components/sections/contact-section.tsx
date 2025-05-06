@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,19 +10,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, Linkedin, Send, Loader2, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { sendEmailAction, type SendEmailInput } from '@/app/actions/send-email';
+
 
 const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
 
-// IMPORTANT: Ensure this Formspree form is activated.
-// Check the aashv143@gmail.com inbox for an activation email from Formspree.
-// The error "This form isn't set up yet" means Formspree is waiting for activation.
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/aashv143@gmail.com";
-
-
 export default function ContactSection() {
   const { toast } = useToast();
-  const [formData, setFormData] = useState<{ name: string; email: string; message: string }>({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState<SendEmailInput>({ name: '', email: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,41 +35,23 @@ export default function ContactSection() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        }),
-      });
+      const result = await sendEmailAction(formData);
 
-      if (response.ok) {
+      if (result.success) {
         setFormData({ name: '', email: '', message: '' }); // Reset form
         toast({
           title: "Message Sent!",
-          description: "Thank you for your message. I'll get back to you soon!",
+          description: result.message,
           variant: "default",
         });
       } else {
-        const errorData = await response.json();
-        // Throw the specific error message from Formspree if available
-        throw new Error(errorData.error || "Formspree submission failed. Please check your Formspree setup.");
+        throw new Error(result.message);
       }
     } catch (error) {
-      console.error("Error sending message via Formspree:", error);
-      let errorMessage = "There was a problem sending your message. Please try again later or contact me directly via email.";
-      if (error instanceof Error && error.message) {
-        // Provide more specific feedback if it's a known Formspree issue
-        if (error.message.toLowerCase().includes("form not found") || error.message.toLowerCase().includes("form isn't set up yet")) {
-            errorMessage = "The contact form is not yet active. Please check the email associated with the form to activate it on Formspree, or ensure the Formspree ID is correct.";
-        } else {
-            errorMessage = error.message;
-        }
+      console.error("Error sending message:", error);
+      let errorMessage = "There was a problem sending your message. Please try again later.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
       }
       toast({
         title: "Error Sending Message",
@@ -77,6 +62,10 @@ export default function ContactSection() {
       setIsLoading(false);
     }
   };
+
+  if (!mounted) {
+    return null; // Or a loading spinner, to avoid hydration issues with form state
+  }
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-muted">
@@ -193,3 +182,4 @@ export default function ContactSection() {
       </div>
     </section>
   );
+}
