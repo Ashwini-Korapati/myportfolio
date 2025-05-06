@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -89,7 +90,7 @@ export default function Header() {
             </a>
              <a
               href="/resume/Ashwini_M_Resume.pdf"
-              download
+              download="Ashwini_M_Resume.pdf"
               className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors"
             >
               <Download className="mr-2 h-4 w-4" />

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, type FormEvent } from 'react';
@@ -26,8 +27,9 @@ export default function ContactSection() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Replace with actual API call to send email or save message
-    console.log('Form data submitted:', formData);
+    // In a real application, this would be an API call to a backend service
+    // that sends an email to korapatiashwini@gmail.com.
+    console.log('Form data submitted, intended for korapatiashwini@gmail.com:', formData);
 
     setIsLoading(false);
     setFormData({ name: '', email: '', message: '' }); // Reset form
@@ -142,7 +144,7 @@ export default function ContactSection() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-foreground/80 mb-4">Download my latest resume for more details about my experience and skills.</p>
-                    <Link href="/resume/Ashwini_M_Resume.pdf" download passHref>
+                    <Link href="/resume/Ashwini_M_Resume.pdf" download="Ashwini_M_Resume.pdf" passHref>
                         <Button className="w-full sm:w-auto group">
                             Download PDF <Download className="ml-2 h-5 w-5 group-hover:animate-bounce" />
                         </Button>
