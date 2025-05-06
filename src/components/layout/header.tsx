@@ -15,7 +15,7 @@ const navItems = [
   { name: 'Contact', href: '#contact', icon: <Send className="mr-2 h-4 w-4" /> },
 ];
 
-const resumeLink = "https://docs.google.com/document/d/1-a-lso9cqI9sieKBBXA76JgGDbG514v1muVSa2y8gBo/edit?usp=sharing";
+const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -91,9 +91,8 @@ export default function Header() {
               LinkedIn
             </a>
              <a
-              href={resumeLink}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={resumePdfPath}
+              download="Ashwini_M_Resume.pdf"
               className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors"
             >
               <Download className="mr-2 h-4 w-4" />
