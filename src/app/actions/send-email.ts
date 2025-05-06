@@ -34,10 +34,28 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   const emailServerPortEnv = process.env.EMAIL_SERVER_PORT;
   const emailTo = process.env.EMAIL_TO || 'aashv143@gmail.com'; // Default receiver
 
-  if (!emailServerUser || !emailServerPassword || !emailServerHost || !emailServerPortEnv || !emailTo) {
-    console.error('Email server configuration incomplete. Check .env file for EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD, EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, EMAIL_TO.');
-    return { success: false, message: 'The email service is not configured. Please ensure all required email environment variables are set.' };
+  // More detailed check for missing essential variables
+  if (!emailServerUser) {
+    console.error('Missing EMAIL_SERVER_USER in .env file.');
+    return { success: false, message: 'Email service is not configured: Missing SMTP username.' };
   }
+  if (!emailServerPassword) {
+    console.error('Missing EMAIL_SERVER_PASSWORD in .env file.');
+    return { success: false, message: 'Email service is not configured: Missing SMTP password.' };
+  }
+  if (!emailServerHost) {
+    console.error('Missing EMAIL_SERVER_HOST in .env file.');
+    return { success: false, message: 'Email service is not configured: Missing SMTP host.' };
+  }
+  if (!emailServerPortEnv) {
+    console.error('Missing EMAIL_SERVER_PORT in .env file.');
+    return { success: false, message: 'Email service is not configured: Missing SMTP port.' };
+  }
+   if (!emailTo) { // Should be covered by default, but good practice
+    console.error('Missing EMAIL_TO in .env file and no default is set.');
+    return { success: false, message: 'Email service is not configured: Missing recipient email address.' };
+  }
+
 
   const emailServerPort = parseInt(emailServerPortEnv, 10);
   if (isNaN(emailServerPort)) {
@@ -47,7 +65,6 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   
   let emailServerSecure = process.env.EMAIL_SERVER_SECURE === 'true';
   if (process.env.EMAIL_SERVER_SECURE === undefined) {
-    // Autodetect secure based on port if not explicitly set
     emailServerSecure = emailServerPort === 465;
   }
 
@@ -65,8 +82,8 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
     },
     connectionTimeout: 10000, 
     socketTimeout: 10000,
-    debug: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev for more details
-    logger: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev
+    debug: process.env.NODE_ENV === 'development', 
+    logger: process.env.NODE_ENV === 'development', 
   });
 
   const mailOptions = {
@@ -79,13 +96,6 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   };
 
   try {
-    // console.log('Attempting to send email with options:', mailOptions);
-    // console.log('Using transporter config:', { host: emailServerHost, port: emailServerPort, secure: emailServerSecure, user: emailServerUser ? '******' : undefined });
-    
-    // Optional: Verify connection configuration - can be helpful for debugging
-    // await transporter.verify();
-    // console.log("Nodemailer transporter verified successfully.");
-
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully: %s', info.messageId);
     return { success: true, message: "Thank you for your message. I'll get back to you soon!" };
@@ -97,16 +107,15 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
         const nodemailerError = error as any; 
         if (nodemailerError.code === 'ECONNREFUSED' || nodemailerError.code === 'ENOTFOUND' || nodemailerError.code === 'EHOSTUNREACH') {
             errorMessage = `Could not connect to email server at ${emailServerHost}:${emailServerPort}. Please check server address, port, and network.`;
-        } else if (nodemailerError.responseCode === 535 || nodemailerError.code === 'EAUTH') { 
+        } else if (nodemailerError.responseCode === 535 || nodemailerError.code === 'EAUTH' || (nodemailerError.message && nodemailerError.message.toLowerCase().includes('authentication'))) { 
             errorMessage = 'Email server authentication failed. Please check your email credentials (EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD) in environment variables.';
-        } else if (nodemailerError.code === 'ETIMEDOUT' || error.message.toLowerCase().includes('timeout')) {
+        } else if (nodemailerError.code === 'ETIMEDOUT' || (error.message && error.message.toLowerCase().includes('timeout'))) {
             errorMessage = `The email server at ${emailServerHost} timed out. Please try again later or check server status.`;
         } else if (nodemailerError.code === 'EENVELOPE') {
             errorMessage = 'There was an issue with the email recipient or sender addresses. Please check them.';
         } else if (nodemailerError.code === 'ESOCKET') {
              errorMessage = `A socket error occurred while connecting to ${emailServerHost}:${emailServerPort}. This could be a TLS/SSL issue or network problem. Ensure 'EMAIL_SERVER_SECURE' is set correctly.`;
         } else {
-            // For other errors, include the error message if it's informative
              errorMessage = `Failed to send email: ${error.message || 'Unknown Nodemailer error'}. Check server logs.`;
         }
     }
@@ -114,4 +123,3 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
     return { success: false, message: errorMessage };
   }
 }
-
