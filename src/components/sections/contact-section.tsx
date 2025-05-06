@@ -12,8 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
-// Replace 'YOUR_FORM_ID' with your actual Formspree form ID
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+// Replace with your actual Formspree form ID or use your email directly
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/aashv143@gmail.com";
 
 
 export default function ContactSection() {
@@ -39,7 +39,7 @@ export default function ContactSection() {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          message: formData.message, // Formspree typically expects 'message' or a custom field name
+          message: formData.message,
         }),
       });
 
@@ -56,9 +56,15 @@ export default function ContactSection() {
       }
     } catch (error) {
       console.error("Error sending message via Formspree:", error);
+      let errorMessage = "There was a problem sending your message. Please try again later or contact me directly via email.";
+      if (error instanceof Error && error.message) {
+        errorMessage = error.message.includes("form_not_found") 
+          ? "The contact form is not configured correctly. Please ensure the Formspree ID is valid."
+          : error.message;
+      }
       toast({
         title: "Error Sending Message",
-        description: "There was a problem sending your message. Please try again later or contact me directly via email.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -75,8 +81,6 @@ export default function ContactSection() {
           </h2>
           <p className="text-lg text-foreground/80 max-w-xl mx-auto">
             Have a question or want to work together? Feel free to reach out.
-            <br />
-            <strong className="text-primary">Note:</strong> For the contact form to work, please replace <code>YOUR_FORM_ID</code> in <code>src/components/sections/contact-section.tsx</code> with your actual Formspree form ID.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-12 items-start">
