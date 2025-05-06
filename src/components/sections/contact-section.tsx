@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, type FormEvent } from 'react';
@@ -12,7 +11,10 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
-// Replace with your actual Formspree form ID or use your email directly
+
+// IMPORTANT: Ensure this Formspree form is activated.
+// Check the aashv143@gmail.com inbox for an activation email from Formspree.
+// The error "This form isn't set up yet" means Formspree is waiting for activation.
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/aashv143@gmail.com";
 
 
@@ -52,15 +54,19 @@ export default function ContactSection() {
         });
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Formspree submission failed");
+        // Throw the specific error message from Formspree if available
+        throw new Error(errorData.error || "Formspree submission failed. Please check your Formspree setup.");
       }
     } catch (error) {
       console.error("Error sending message via Formspree:", error);
       let errorMessage = "There was a problem sending your message. Please try again later or contact me directly via email.";
       if (error instanceof Error && error.message) {
-        errorMessage = error.message.includes("form_not_found") 
-          ? "The contact form is not configured correctly. Please ensure the Formspree ID is valid."
-          : error.message;
+        // Provide more specific feedback if it's a known Formspree issue
+        if (error.message.toLowerCase().includes("form not found") || error.message.toLowerCase().includes("form isn't set up yet")) {
+            errorMessage = "The contact form is not yet active. Please check the email associated with the form to activate it on Formspree, or ensure the Formspree ID is correct.";
+        } else {
+            errorMessage = error.message;
+        }
       }
       toast({
         title: "Error Sending Message",
@@ -187,4 +193,3 @@ export default function ContactSection() {
       </div>
     </section>
   );
-}
