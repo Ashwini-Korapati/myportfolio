@@ -37,13 +37,16 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="relative group w-80 h-80 mt-8 md:mt-0 mx-auto"> {/* Added mt-8 for overall downward shift, mx-auto for centering in its column */}
+        <div className="relative group w-80 h-80 md:w-96 md:h-96 mt-8 md:mt-0 mx-auto"> {/* Increased size */}
+          {/* Outer circle effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-pink-600 rounded-full opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
           <Image
             src="/resume/ashwini-img_1.png"
             alt="Ashwini M Profile Picture"
-            fill
+            width={384} // Adjusted to match new larger size (24rem = 384px)
+            height={384} // Adjusted to match new larger size (24rem = 384px)
             className="rounded-full shadow-2xl relative z-10 object-cover object-top transition-transform duration-500 transform group-hover:scale-105"
+            style={{ width: '100%', height: '100%' }} // Ensure image fills the container
             data-ai-hint="professional portrait"
             priority
           />
