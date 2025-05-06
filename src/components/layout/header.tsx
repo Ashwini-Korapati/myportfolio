@@ -89,7 +89,7 @@ export default function Header() {
               LinkedIn
             </a>
              <a
-              href="/resume/Ashwini_M_Resume.pdf" // Path relative to public folder
+              href="/resume/Ashwini_M_Resume.pdf" 
               download="Ashwini_M_Resume.pdf"
               className="flex items-center text-lg font-medium text-foreground hover:text-primary transition-colors"
             >

@@ -11,9 +11,13 @@ import { Mail, Phone, Linkedin, Send, Loader2, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
+// Import the Genkit flow
+import { sendContactMessage, type SendContactMessageInput } from '@/ai/flows/send-contact-message-flow';
+
+
 export default function ContactSection() {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState<{ name: string; email: string; message: string }>({ name: '', email: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -24,22 +28,31 @@ export default function ContactSection() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Call the Genkit flow
+      const flowInput: SendContactMessageInput = {
+        name: formData.name,
+        email: formData.email,
+        messageBody: formData.message,
+      };
+      const result = await sendContactMessage(flowInput);
 
-    // In a real application, this form data would be sent to a backend service,
-    // which would then process it and send an email to korapatiashwini@gmail.com.
-    // For this demo, we are logging it to the console.
-    console.log('Simulating form submission. In a real app, this data would be sent to a backend to email korapatiashwini@gmail.com:', formData);
-
-    setIsLoading(false);
-    setFormData({ name: '', email: '', message: '' }); // Reset form
-
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-      variant: "default", 
-    });
+      setFormData({ name: '', email: '', message: '' }); // Reset form
+      toast({
+        title: "Message Sent!",
+        description: result.confirmationMessage,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error Sending Message",
+        description: "There was a problem sending your message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -92,7 +105,7 @@ export default function ContactSection() {
                 <div>
                   <Label htmlFor="message" className="text-foreground/80">Message</Label>
                   <Textarea
-                    name="message"
+                    name="message" // Keep name as 'message' for the form state
                     id="message"
                     rows={5}
                     value={formData.message}
@@ -145,11 +158,11 @@ export default function ContactSection() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-foreground/80 mb-4">Download my latest resume for more details about my experience and skills.</p>
-                    <Link href="/resume/Ashwini_M_Resume.pdf" download="Ashwini_M_Resume.pdf" passHref>
+                    <a href="/Ashwini_M_Resume.pdf" download="Ashwini_M_Resume.pdf">
                         <Button className="w-full sm:w-auto group">
                             Download PDF <Download className="ml-2 h-5 w-5 group-hover:animate-bounce" />
                         </Button>
-                    </Link>
+                    </a>
                 </CardContent>
             </Card>
           </div>
@@ -158,3 +171,4 @@ export default function ContactSection() {
     </section>
   );
 }
+
