@@ -38,12 +38,12 @@ Email: {{{email}}}
 Message:
 {{{messageBody}}}
 
-This message needs to be recorded and Ashwini M. (korapatiashwini@gmail.com) should be notified.
+This message needs to be recorded and Ashwini M. (aashv143@gmail.com) should be notified.
 
 Your primary task is to generate a brief, polite, and reassuring confirmation message for the user.
 This confirmation message should acknowledge receipt of their message and state that Ashwini will review it and respond if necessary.
 Example confirmation message: "Thank you for your message, {{{name}}}! Ashwini has received it and will get back to you if a response is needed."
-Do NOT include Ashwini's email address (korapatiashwini@gmail.com) in the confirmation message sent back to the user.
+Do NOT include Ashwini's email address (aashv143@gmail.com) in the confirmation message sent back to the user.
 Do NOT mention anything about forwarding the email in the confirmation message.
 Keep the confirmation message concise and professional.
 `,
@@ -63,7 +63,7 @@ const sendContactMessageFlow = ai.defineFlow(
     // This functionality is NOT currently implemented beyond this simulation.
     console.log('\n--- SIMULATING EMAIL SEND ---');
     console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log('Recipient: korapatiashwini@gmail.com');
+    console.log('Recipient: aashv143@gmail.com'); // Updated email address
     console.log('Sender Name:', input.name);
     console.log('Sender Email:', input.email);
     console.log('Message Body:\n', input.messageBody);
