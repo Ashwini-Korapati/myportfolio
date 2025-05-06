@@ -28,7 +28,7 @@ export default function ExperienceSection() {
         </div>
         <div className="space-y-8">
           {experiences.map((exp, index) => (
-            <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+            <Card key={index} className="shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-card/90 dark:hover:bg-card/80">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                   <CardTitle className="text-2xl text-primary flex items-center mb-2 sm:mb-0">

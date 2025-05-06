@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, Linkedin, Send, Loader2, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { sendEmailAction, type SendEmailInput } from '@/app/actions/send-email';
+import { sendEmailAction, type SendEmailInput, type SendEmailResult } from '@/app/actions/send-email';
 
 const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
 
@@ -34,7 +34,7 @@ export default function ContactSection() {
     setIsLoading(true);
 
     try {
-      const result = await sendEmailAction(formData);
+      const result: SendEmailResult = await sendEmailAction(formData);
 
       if (result.success) {
         setFormData({ name: '', email: '', message: '' }); // Reset form
@@ -130,7 +130,7 @@ export default function ContactSection() {
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-12 items-start">
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 p-2">
+          <Card className="shadow-lg hover:shadow-xl transition-all duration-300 p-2 transform hover:scale-105 hover:bg-card/90 dark:hover:bg-card/80">
             <CardHeader>
               <CardTitle className="text-2xl text-primary flex items-center">
                 <Send className="mr-3 h-7 w-7" />
@@ -194,7 +194,7 @@ export default function ContactSection() {
             </CardContent>
           </Card>
           <div className="space-y-8">
-            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-card/90 dark:hover:bg-card/80">
               <CardHeader>
                 <CardTitle className="text-xl text-primary">Contact Details</CardTitle>
               </CardHeader>
@@ -215,7 +215,7 @@ export default function ContactSection() {
                 </div>
               </CardContent>
             </Card>
-             <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+             <Card className="shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-card/90 dark:hover:bg-card/80">
                 <CardHeader>
                     <CardTitle className="text-xl text-primary">Resume</CardTitle>
                 </CardHeader>

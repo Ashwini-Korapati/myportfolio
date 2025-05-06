@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, ExternalLink } from 'lucide-react';
@@ -9,7 +8,7 @@ const projects = [
     title: 'OMS (HRMS) Application',
     description: 'Developed a comprehensive HR management system. The application includes modules for employee management, attendance tracking, leave and payroll management, and admin functionalities.',
     technologies: ['ReactJS', 'Redux', 'NodeJS', 'SQL'],
-    imageUrl: "/resume/hrms.jpg", // Updated path
+    imageUrl: '/resume/hrms.jpg', 
     imageHint: "HRMS dashboard",
     // liveLink: '#', // Add live link if available
     // repoLink: '#', // Add repo link if available
@@ -18,7 +17,7 @@ const projects = [
     title: 'Autodesk Cloud Applications',
     description: 'Built a full-fledged, cloud-based application for managing users, projects, companies, and roles. Implemented features for adding/deleting and updating members, organizational data, document management system with file uploads, CRUD operations, and PDF comparison tools (civil drawing illustrations), issue tracking and assignment workflows.',
     technologies: ['ReactJS', 'Redux', 'SQL', 'Python'],
-    imageUrl: "/resume/autodesk.jpg", // Updated path
+    imageUrl: '/resume/autodesk.jpg', 
     imageHint: "document management",
     // liveLink: '#',
     // repoLink: '#',
@@ -36,15 +35,16 @@ export default function ProjectsSection() {
         </div>
         <div className="grid md:grid-cols-2 gap-8">
           {projects.map((project, index) => (
-            <Card key={index} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <Card key={index} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group transform hover:scale-105 hover:bg-card/90 dark:hover:bg-card/80">
               <div className="relative h-60 w-full overflow-hidden">
                 <Image
                   src={project.imageUrl}
                   alt={project.title}
                   fill
                   style={{ objectFit: 'cover' }}
-                  className="group-hover:scale-105 transition-transform duration-500"
+                  className="group-hover:scale-110 transition-transform duration-500" // Image scales more on hover
                   data-ai-hint={project.imageHint}
+                  // placeholder="blur" // Removed placeholder="blur" if images are local and not StaticImport
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
               </div>
