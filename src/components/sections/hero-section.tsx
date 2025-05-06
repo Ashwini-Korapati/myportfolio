@@ -39,7 +39,7 @@ export default function HeroSection() {
         </div>
         <div className="relative group">
           <Image
-            src="/resume/ashwini-img_1.jpg"
+            src="/resume/ashwini-img_1.png"
             alt="Ashwini M Profile Picture"
             width={450}
             height={450}
@@ -53,5 +53,6 @@ export default function HeroSection() {
     </section>
   );
 }
+
 
 
