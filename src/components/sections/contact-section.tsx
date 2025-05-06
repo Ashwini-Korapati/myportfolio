@@ -27,9 +27,10 @@ export default function ContactSection() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // In a real application, this would be an API call to a backend service
-    // that sends an email to korapatiashwini@gmail.com.
-    console.log('Form data submitted, intended for korapatiashwini@gmail.com:', formData);
+    // In a real application, this form data would be sent to a backend service,
+    // which would then process it and send an email to korapatiashwini@gmail.com.
+    // For this demo, we are logging it to the console.
+    console.log('Simulating form submission. In a real app, this data would be sent to a backend to email korapatiashwini@gmail.com:', formData);
 
     setIsLoading(false);
     setFormData({ name: '', email: '', message: '' }); // Reset form
