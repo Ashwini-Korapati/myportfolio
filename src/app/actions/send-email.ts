@@ -1,3 +1,4 @@
+
 'use server';
 
 import nodemailer from 'nodemailer';
@@ -30,35 +31,42 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   const emailServerUser = process.env.EMAIL_SERVER_USER;
   const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
   const emailServerHost = process.env.EMAIL_SERVER_HOST;
-  const emailServerPort = process.env.EMAIL_SERVER_PORT || '587'; // Default to 587 for STARTTLS
-  const emailTo = process.env.EMAIL_TO || 'aashv143@gmail.com'; // Receiver's email address
+  const emailServerPortEnv = process.env.EMAIL_SERVER_PORT;
+  const emailTo = process.env.EMAIL_TO || 'aashv143@gmail.com'; // Default receiver
 
-  // Determine 'secure' based on port, typical for 465 (SSL) vs 587 (STARTTLS)
-  // process.env.EMAIL_SERVER_SECURE can override this logic if explicitly set
+  if (!emailServerUser || !emailServerPassword || !emailServerHost || !emailServerPortEnv || !emailTo) {
+    console.error('Email server configuration incomplete. Check .env file for EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD, EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, EMAIL_TO.');
+    return { success: false, message: 'The email service is not configured. Please ensure all required email environment variables are set.' };
+  }
+
+  const emailServerPort = parseInt(emailServerPortEnv, 10);
+  if (isNaN(emailServerPort)) {
+    console.error('Invalid EMAIL_SERVER_PORT in .env file. It must be a number.');
+    return { success: false, message: 'The email service port is misconfigured.' };
+  }
+  
   let emailServerSecure = process.env.EMAIL_SERVER_SECURE === 'true';
   if (process.env.EMAIL_SERVER_SECURE === undefined) {
-    emailServerSecure = parseInt(emailServerPort, 10) === 465;
+    // Autodetect secure based on port if not explicitly set
+    emailServerSecure = emailServerPort === 465;
   }
 
 
-  if (!emailServerUser || !emailServerPassword || !emailServerHost) {
-    console.error('Email server credentials or host not configured in environment variables.');
-    return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-  }
+  console.log(`Attempting to send email. To: ${emailTo}, From (config): ${emailServerUser}, Host: ${emailServerHost}, Port: ${emailServerPort}, Secure: ${emailServerSecure}`);
+
 
   const transporter = nodemailer.createTransport({
     host: emailServerHost,
-    port: parseInt(emailServerPort, 10),
+    port: emailServerPort,
     secure: emailServerSecure, 
     auth: {
       user: emailServerUser,
       pass: emailServerPassword,
     },
     connectionTimeout: 10000, 
-    socketTimeout: 10000, 
-    // requireTLS: true, // Often useful for port 587
-    // logger: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev
-    // debug: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev
+    socketTimeout: 10000,
+    debug: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev for more details
+    logger: process.env.NODE_ENV === 'development', // Enable SMTP logs in dev
   });
 
   const mailOptions = {
@@ -79,23 +87,31 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
     // console.log("Nodemailer transporter verified successfully.");
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: %s', info.messageId);
+    console.log('Email sent successfully: %s', info.messageId);
     return { success: true, message: "Thank you for your message. I'll get back to you soon!" };
   } catch (error) {
     console.error('Error sending email via Nodemailer:', error);
-    let errorMessage = 'There was a problem sending your message. Please check server logs for Nodemailer error details.'; // More specific default
+    let errorMessage = 'There was a problem sending your message. Please check server logs for Nodemailer error details.';
+    
     if (error instanceof Error) {
-        const nodemailerError = error as any; // Type assertion for Nodemailer specific codes
-        if (nodemailerError.code === 'ECONNREFUSED' || nodemailerError.code === 'ENOTFOUND') {
-            errorMessage = 'Could not connect to the email server. Please check the server configuration and network.';
+        const nodemailerError = error as any; 
+        if (nodemailerError.code === 'ECONNREFUSED' || nodemailerError.code === 'ENOTFOUND' || nodemailerError.code === 'EHOSTUNREACH') {
+            errorMessage = `Could not connect to email server at ${emailServerHost}:${emailServerPort}. Please check server address, port, and network.`;
         } else if (nodemailerError.responseCode === 535 || nodemailerError.code === 'EAUTH') { 
-            errorMessage = 'Email server authentication failed. Please check your email credentials in environment variables.';
-        } else if (nodemailerError.code === 'ETIMEDOUT' || error.message.includes('Timeout')) {
-            errorMessage = 'The email server timed out. Please try again later.';
+            errorMessage = 'Email server authentication failed. Please check your email credentials (EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD) in environment variables.';
+        } else if (nodemailerError.code === 'ETIMEDOUT' || error.message.toLowerCase().includes('timeout')) {
+            errorMessage = `The email server at ${emailServerHost} timed out. Please try again later or check server status.`;
         } else if (nodemailerError.code === 'EENVELOPE') {
             errorMessage = 'There was an issue with the email recipient or sender addresses. Please check them.';
+        } else if (nodemailerError.code === 'ESOCKET') {
+             errorMessage = `A socket error occurred while connecting to ${emailServerHost}:${emailServerPort}. This could be a TLS/SSL issue or network problem. Ensure 'EMAIL_SERVER_SECURE' is set correctly.`;
+        } else {
+            // For other errors, include the error message if it's informative
+             errorMessage = `Failed to send email: ${error.message || 'Unknown Nodemailer error'}. Check server logs.`;
         }
     }
+    console.error(`Detailed error message for client: ${errorMessage}`);
     return { success: false, message: errorMessage };
   }
 }
+
