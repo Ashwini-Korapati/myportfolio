@@ -14,6 +14,7 @@ import Link from 'next/link';
 // Import the Genkit flow
 import { sendContactMessage, type SendContactMessageInput } from '@/ai/flows/send-contact-message-flow';
 
+const resumeLink = "https://docs.google.com/document/d/1-a-lso9cqI9sieKBBXA76JgGDbG514v1muVSa2y8gBo/edit?usp=sharing";
 
 export default function ContactSection() {
   const { toast } = useToast();
@@ -157,10 +158,10 @@ export default function ContactSection() {
                     <CardTitle className="text-xl text-primary">Resume</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-foreground/80 mb-4">Download my latest resume for more details about my experience and skills.</p>
-                    <a href="/Ashwini_M_Resume.pdf" download="Ashwini_M_Resume.pdf">
+                    <p className="text-foreground/80 mb-4">View my latest resume for more details about my experience and skills.</p>
+                    <a href={resumeLink} target="_blank" rel="noopener noreferrer">
                         <Button className="w-full sm:w-auto group">
-                            Download PDF <Download className="ml-2 h-5 w-5 group-hover:animate-bounce" />
+                            View Resume <Download className="ml-2 h-5 w-5 group-hover:animate-bounce" />
                         </Button>
                     </a>
                 </CardContent>
