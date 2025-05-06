@@ -9,8 +9,8 @@ const projects = [
     title: 'OMS (HRMS) Application',
     description: 'Developed a comprehensive HR management system. The application includes modules for employee management, attendance tracking, leave and payroll management, and admin functionalities.',
     technologies: ['ReactJS', 'Redux', 'NodeJS', 'SQL'],
-    imageUrl: "https://picsum.photos/seed/hrms-app-visual/600/400",
-    imageHint: "HRMS dashboard",
+    imageUrl: "https://picsum.photos/seed/project-hrms-ui/600/400",
+    imageHint: "software interface",
     // liveLink: '#', // Add live link if available
     // repoLink: '#', // Add repo link if available
   },
@@ -18,8 +18,8 @@ const projects = [
     title: 'Autodesk Cloud Applications',
     description: 'Built a full-fledged, cloud-based application for managing users, projects, companies, and roles. Implemented features for adding/deleting and updating members, organizational data, document management system with file uploads, CRUD operations, and PDF comparison tools (civil drawing illustrations), issue tracking and assignment workflows.',
     technologies: ['ReactJS', 'Redux', 'SQL', 'Python'],
-    imageUrl: "https://picsum.photos/seed/cloud-doc-interface/600/400",
-    imageHint: "document management",
+    imageUrl: "https://picsum.photos/seed/project-cloud-app/600/400",
+    imageHint: "cloud application",
     // liveLink: '#',
     // repoLink: '#',
   },
@@ -85,3 +85,4 @@ export default function ProjectsSection() {
     </section>
   );
 }
+
