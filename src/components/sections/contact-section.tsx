@@ -12,7 +12,6 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { sendEmailAction, type SendEmailInput } from '@/app/actions/send-email';
 
-
 const resumePdfPath = "/resume/Ashwini_M_Resume.pdf";
 
 export default function ContactSection() {
@@ -64,7 +63,59 @@ export default function ContactSection() {
   };
 
   if (!mounted) {
-    return null; // Or a loading spinner, to avoid hydration issues with form state
+    // Render a placeholder or null to avoid hydration mismatch,
+    // especially if form fields rely on client-side state initially.
+    return (
+      <section id="contact" className="py-16 md:py-24 bg-muted">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Get In <span className="text-primary">Touch</span>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            <Card className="shadow-lg p-2">
+              <CardHeader>
+                <CardTitle className="text-2xl text-primary flex items-center">
+                  <Send className="mr-3 h-7 w-7" />
+                  Send a Message
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Placeholder for form or loading state */}
+                <div className="space-y-6">
+                  <div className="h-10 bg-gray-200 rounded w-full animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded w-full animate-pulse"></div>
+                  <div className="h-24 bg-gray-200 rounded w-full animate-pulse"></div>
+                  <div className="h-12 bg-gray-300 rounded w-full animate-pulse"></div>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="space-y-8">
+               <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl text-primary">Contact Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="h-6 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+                </CardContent>
+              </Card>
+              <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl text-primary">Resume</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-6 bg-gray-200 rounded w-full mb-4 animate-pulse"></div>
+                    <div className="h-12 bg-gray-300 rounded w-full sm:w-auto animate-pulse"></div>
+                </CardContent>
+            </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
