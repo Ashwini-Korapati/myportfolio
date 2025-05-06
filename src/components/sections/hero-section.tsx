@@ -37,14 +37,13 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="relative group w-80 h-80">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-pink-600 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+        <div className="relative group w-80 h-80 mt-8 md:mt-0 mx-auto"> {/* Added mt-8 for overall downward shift, mx-auto for centering in its column */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-pink-600 rounded-full opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
           <Image
             src="/resume/ashwini-img_1.png"
             alt="Ashwini M Profile Picture"
             fill
-            style={{ objectFit: 'cover' }}
-            className="rounded-full mx-auto shadow-2xl relative z-10 object-cover transition-transform duration-500 transform scale-110"
+            className="rounded-full shadow-2xl relative z-10 object-cover object-top transition-transform duration-500 transform group-hover:scale-105"
             data-ai-hint="professional portrait"
             priority
           />
@@ -53,4 +52,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
