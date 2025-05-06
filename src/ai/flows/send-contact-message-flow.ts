@@ -1,16 +1,16 @@
-
 'use server';
 /**
- * @fileOverview Handles sending contact messages via AI.
+ * @fileOverview Handles sending contact messages, simulating forwarding to WhatsApp.
  *
  * - sendContactMessage - A function that processes the contact message.
  * - SendContactMessageInput - The input type for the sendContactMessage function.
  * - SendContactMessageOutput - The return type for the sendContactMessage function.
  *
- * IMPORTANT: This flow currently SIMULATES sending a message.
- * It generates a confirmation using AI but DOES NOT actually send an email.
- * To send a real email, you would need to integrate an email service
- * (e.g., Nodemailer, SendGrid, Resend) within this flow.
+ * IMPORTANT: This flow currently SIMULATES forwarding a message to WhatsApp.
+ * It generates a confirmation using AI but DOES NOT actually send a WhatsApp message.
+ * To send a real WhatsApp message, you would need to integrate a WhatsApp API service
+ * (e.g., Twilio API for WhatsApp, Meta Business API) within this flow.
+ * The user's email is still collected for record-keeping/fallback.
  */
 
 import {ai} from '@/ai/genkit';
@@ -18,7 +18,7 @@ import {z} from 'genkit';
 
 const SendContactMessageInputSchema = z.object({
   name: z.string().describe('The name of the person sending the message.'),
-  email: z.string().email().describe('The email address of the sender.'),
+  email: z.string().email().describe('The email address of the sender (for record-keeping).'),
   messageBody: z.string().describe('The content of the message.'),
 });
 export type SendContactMessageInput = z.infer<typeof SendContactMessageInputSchema>;
@@ -31,9 +31,6 @@ export type SendContactMessageOutput = z.infer<typeof SendContactMessageOutputSc
 
 
 export async function sendContactMessage(input: SendContactMessageInput): Promise<SendContactMessageOutput> {
-  // This flow is intended to simulate sending a message and generate a confirmation.
-  // It does not actually send an email with the current Genkit setup.
-  // For actual email sending, a dedicated email service/tool would be needed.
   return sendContactMessageFlow(input);
 }
 
@@ -47,7 +44,8 @@ const prompt = ai.definePrompt({
     "{{messageBody}}"
 
     Please generate a polite confirmation message acknowledging receipt of their message.
-    The message should inform the user that their message has been successfully received and someone will get back to them if a response is needed.
+    The message should inform the user that their message has been successfully received and will be forwarded to the site owner via WhatsApp to the number +919513035255.
+    Inform the user that a response will be provided if needed.
     Ensure the tone is professional and friendly.
     Set the status output field to "success".
   `,
@@ -60,28 +58,28 @@ const sendContactMessageFlow = ai.defineFlow(
     outputSchema: SendContactMessageOutputSchema,
   },
   async (input: SendContactMessageInput) => {
+    const targetWhatsAppNumber = '+919513035255'; // User-specified WhatsApp number
+
     // Log the received contact message details to the server console.
-    // This is where you can "see" the user's response on the server side.
-    // This does NOT send an email.
-    console.log('New contact message received:');
-    console.log('Name:', input.name);
-    console.log('Email:', input.email);
+    // This SIMULATES forwarding the message to WhatsApp.
+    console.log('Contact form submission received:');
+    console.log('From Name:', input.name);
+    console.log('From Email:', input.email);
     console.log('Message:', input.messageBody);
+    console.log(`SIMULATING forwarding message to WhatsApp: ${targetWhatsAppNumber}`);
     console.log('---');
-    console.log('Reminder: This flow SIMULATES email sending. To receive actual emails, integrate an email service.');
+    console.log('Reminder: This flow SIMULATES WhatsApp sending. To send actual WhatsApp messages, integrate a WhatsApp API service (e.g., Twilio, Meta Business API).');
 
 
     try {
       const {output} = await prompt(input);
       if (!output || !output.confirmationMessage) {
-        // Fallback in case the prompt fails to generate structured output or an empty confirmation
         console.warn('SendContactMessageFlow: Prompt did not return expected output, using fallback.');
         return {
-            confirmationMessage: `Thank you for your message, ${input.name}. We have received it and will get back to you shortly if a response is needed.`,
+            confirmationMessage: `Thank you for your message, ${input.name}. We have received it and will forward it to be reviewed. We'll get back to you if a response is needed.`,
             status: "success"
         };
       }
-      // Ensure status is set, even if prompt doesn't explicitly set it (though it should based on instructions)
       return {
         confirmationMessage: output.confirmationMessage,
         status: output.status === 'error' ? 'error' : 'success',
@@ -89,10 +87,9 @@ const sendContactMessageFlow = ai.defineFlow(
     } catch (error) {
       console.error('Error in sendContactMessageFlow:', error);
       return {
-        confirmationMessage: 'We encountered an issue while processing your message. Please try again later or contact us directly at aashv143@gmail.com.',
+        confirmationMessage: 'We encountered an issue while processing your message. Please try again later.',
         status: 'error',
       };
     }
   }
 );
-
