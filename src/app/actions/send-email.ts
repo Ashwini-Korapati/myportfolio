@@ -32,44 +32,45 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
   const emailServerHost = process.env.EMAIL_SERVER_HOST;
   const emailServerPortEnv = process.env.EMAIL_SERVER_PORT;
-  const emailTo = process.env.EMAIL_TO || 'aashv143@gmail.com'; // Default receiver
+  const emailTo = process.env.EMAIL_TO;
 
   // More detailed check for missing essential variables
   if (!emailServerUser) {
-    console.error('Missing EMAIL_SERVER_USER in .env file.');
+    console.error('Missing EMAIL_SERVER_USER environment variable.');
     return { success: false, message: 'Email service is not configured: Missing SMTP username.' };
   }
   if (!emailServerPassword) {
-    console.error('Missing EMAIL_SERVER_PASSWORD in .env file.');
+    console.error('Missing EMAIL_SERVER_PASSWORD environment variable.');
     return { success: false, message: 'Email service is not configured: Missing SMTP password.' };
   }
   if (!emailServerHost) {
-    console.error('Missing EMAIL_SERVER_HOST in .env file.');
+    console.error('Missing EMAIL_SERVER_HOST environment variable.');
     return { success: false, message: 'Email service is not configured: Missing SMTP host.' };
   }
   if (!emailServerPortEnv) {
-    console.error('Missing EMAIL_SERVER_PORT in .env file.');
+    console.error('Missing EMAIL_SERVER_PORT environment variable.');
     return { success: false, message: 'Email service is not configured: Missing SMTP port.' };
   }
-   if (!emailTo) { // Should be covered by default, but good practice
-    console.error('Missing EMAIL_TO in .env file and no default is set.');
-    return { success: false, message: 'Email service is not configured: Missing recipient email address.' };
+   if (!emailTo) {
+    console.error('Missing EMAIL_TO environment variable. This is required to know where to send the email.');
+    return { success: false, message: 'Email service is not configured: Missing recipient email address (EMAIL_TO).' };
   }
 
 
   const emailServerPort = parseInt(emailServerPortEnv, 10);
   if (isNaN(emailServerPort)) {
-    console.error('Invalid EMAIL_SERVER_PORT in .env file. It must be a number.');
+    console.error('Invalid EMAIL_SERVER_PORT environment variable. It must be a number.');
     return { success: false, message: 'The email service port is misconfigured.' };
   }
   
   let emailServerSecure = process.env.EMAIL_SERVER_SECURE === 'true';
-  if (process.env.EMAIL_SERVER_SECURE === undefined) {
-    emailServerSecure = emailServerPort === 465;
+  // Default to secure if port is 465 and EMAIL_SERVER_SECURE is not explicitly set
+  if (process.env.EMAIL_SERVER_SECURE === undefined && emailServerPort === 465) {
+    emailServerSecure = true;
   }
 
 
-  console.log(`Attempting to send email. To: ${emailTo}, From (config): ${emailServerUser}, Host: ${emailServerHost}, Port: ${emailServerPort}, Secure: ${emailServerSecure}`);
+  console.log(`Attempting to send email via Nodemailer. To: ${emailTo}, From (config): ${emailServerUser}, Host: ${emailServerHost}, Port: ${emailServerPort}, Secure: ${emailServerSecure}`);
 
 
   const transporter = nodemailer.createTransport({
@@ -97,10 +98,10 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully: %s', info.messageId);
+    console.log('Nodemailer: Email sent successfully: %s', info.messageId);
     return { success: true, message: "Thank you for your message. I'll get back to you soon!" };
   } catch (error) {
-    console.error('Error sending email via Nodemailer:', error);
+    console.error('Nodemailer: Error sending email:', error);
     let errorMessage = 'There was a problem sending your message. Please check server logs for Nodemailer error details.';
     
     if (error instanceof Error) {
@@ -119,7 +120,7 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
              errorMessage = `Failed to send email: ${error.message || 'Unknown Nodemailer error'}. Check server logs.`;
         }
     }
-    console.error(`Detailed error message for client: ${errorMessage}`);
+    console.error(`Nodemailer: Detailed error message for client: ${errorMessage}`);
     return { success: false, message: errorMessage };
   }
 }
