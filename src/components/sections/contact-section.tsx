@@ -201,7 +201,7 @@ export default function ContactSection() {
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-3 text-foreground/80 hover:text-primary transition-colors">
                   <Mail className="h-6 w-6 text-primary" />
-                  <a href="mailto:aashv143@gmail.com">aashv143@gmail.com</a>
+                  <a href="mailto:korapatiashwini@gmail.com">korapatiashwini@gmail.com</a>
                 </div>
                 <div className="flex items-center space-x-3 text-foreground/80 hover:text-primary transition-colors">
                   <Phone className="h-6 w-6 text-primary" />

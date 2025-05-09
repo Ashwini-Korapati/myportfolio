@@ -32,7 +32,7 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
   const emailServerHost = process.env.EMAIL_SERVER_HOST;
   const emailServerPortEnv = process.env.EMAIL_SERVER_PORT;
-  const emailTo = process.env.EMAIL_TO;
+  const emailTo = 'korapatiashwini@gmail.com';
 
   // More detailed check for missing essential variables
   if (!emailServerUser) {
@@ -50,10 +50,6 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   if (!emailServerPortEnv) {
     console.error('Missing EMAIL_SERVER_PORT environment variable.');
     return { success: false, message: 'Email service is not configured: Missing SMTP port.' };
-  }
-   if (!emailTo) {
-    console.error('Missing EMAIL_TO environment variable. This is required to know where to send the email.');
-    return { success: false, message: 'Email service is not configured: Missing recipient email address (EMAIL_TO).' };
   }
 
 

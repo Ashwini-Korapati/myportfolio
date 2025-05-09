@@ -7,20 +7,18 @@ const projects = [
   {
     title: 'OMS (HRMS) Application',
     description: 'Developed a comprehensive HR management system. The application includes modules for employee management, attendance tracking, leave and payroll management, and admin functionalities.',
-    technologies: ['ReactJS', 'Redux', 'NodeJS', 'SQL'],
-    imageUrl: '/resume/hrms.jpg', 
+    technologies: ['ReactJS', 'Redux', 'NodeJS', 'SQL'], // Updated technologies
+    imageUrl: '/resume/hrms.jpg',
     imageHint: "HRMS dashboard",
     // liveLink: '#', // Add live link if available
     // repoLink: '#', // Add repo link if available
   },
   {
-    title: 'Autodesk Cloud Applications',
-    description: 'Built a full-fledged, cloud-based application for managing users, projects, companies, and roles. Implemented features for adding/deleting and updating members, organizational data, document management system with file uploads, CRUD operations, and PDF comparison tools (civil drawing illustrations), issue tracking and assignment workflows.',
-    technologies: ['ReactJS', 'Redux', 'SQL', 'Python'],
-    imageUrl: '/resume/autodesk.jpg', 
-    imageHint: "document management",
-    // liveLink: '#',
-    // repoLink: '#',
+    title: 'Civil Construction Project Management Application',
+    description: 'Designed for construction teams to plan, manage, and collaborate on projects. Core features include project timelines , drawing uploads, team chat, and progress tracking. Developed with React.js, SQL, Three.js and Python (Django) ; focused on scalability and modular design.',
+    technologies: ['ReactJS', 'SQL', 'Three.js', 'Python(Django)','AWS'],
+    imageUrl: '/resume/autodesk.jpg',
+    imageHint: "Civil Construction dashboard",
   },
 ];
 
@@ -50,7 +48,7 @@ export default function ProjectsSection() {
               </div>
               <CardHeader>
                 <CardTitle className="text-2xl text-primary flex items-center">
-                   <Code className="mr-3 h-7 w-7" />
+                  <Code className="mr-3 h-7 w-7" />
                   {project.title}
                 </CardTitle>
                 <CardDescription className="text-foreground/80 min-h-[60px]">{project.description}</CardDescription>
@@ -71,7 +69,7 @@ export default function ProjectsSection() {
                       Live Demo <ExternalLink className="ml-1 h-4 w-4" />
                     </a>
                   )}
-                   {project.repoLink && (
+                  {project.repoLink && (
                     <a href={project.repoLink} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center">
                       View Code <ExternalLink className="ml-1 h-4 w-4" />
                     </a>
