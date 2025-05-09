@@ -1,4 +1,3 @@
-
 'use server';
 
 import nodemailer from 'nodemailer';
@@ -32,42 +31,39 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
   const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
   const emailServerHost = process.env.EMAIL_SERVER_HOST;
   const emailServerPortEnv = process.env.EMAIL_SERVER_PORT;
-  const emailTo = 'korapatiashwini@gmail.com';
+  const emailTo = process.env.EMAIL_TO_ADDRESS; // Now strictly from env var
 
-  // More detailed check for missing essential variables
-  if (!emailServerUser) {
-    console.error('Missing EMAIL_SERVER_USER environment variable.');
-    return { success: false, message: 'Email service is not configured: Missing SMTP username.' };
-  }
-  if (!emailServerPassword) {
-    console.error('Missing EMAIL_SERVER_PASSWORD environment variable.');
-    return { success: false, message: 'Email service is not configured: Missing SMTP password.' };
-  }
-  if (!emailServerHost) {
-    console.error('Missing EMAIL_SERVER_HOST environment variable.');
-    return { success: false, message: 'Email service is not configured: Missing SMTP host.' };
-  }
-  if (!emailServerPortEnv) {
-    console.error('Missing EMAIL_SERVER_PORT environment variable.');
-    return { success: false, message: 'Email service is not configured: Missing SMTP port.' };
+  const requiredEnvVars = {
+    EMAIL_SERVER_USER: emailServerUser,
+    EMAIL_SERVER_PASSWORD: emailServerPassword,
+    EMAIL_SERVER_HOST: emailServerHost,
+    EMAIL_SERVER_PORT: emailServerPortEnv,
+    EMAIL_TO_ADDRESS: emailTo,
+  };
+
+  const missingVars = Object.entries(requiredEnvVars)
+    .filter(([, value]) => !value)
+    .map(([key]) => key);
+
+  if (missingVars.length > 0) {
+    const errorMessage = `Email service is not configured. Missing required environment variables: ${missingVars.join(', ')}. Please ensure these are set in your Netlify (or other hosting provider) deployment settings.`;
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
   }
 
-
-  const emailServerPort = parseInt(emailServerPortEnv, 10);
+  const emailServerPort = parseInt(emailServerPortEnv!, 10);
   if (isNaN(emailServerPort)) {
-    console.error('Invalid EMAIL_SERVER_PORT environment variable. It must be a number.');
-    return { success: false, message: 'The email service port is misconfigured.' };
+    const errorMessage = "Invalid EMAIL_SERVER_PORT environment variable. It must be a number. Please check your Netlify (or other hosting provider) deployment settings.";
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
   }
   
   let emailServerSecure = process.env.EMAIL_SERVER_SECURE === 'true';
-  // Default to secure if port is 465 and EMAIL_SERVER_SECURE is not explicitly set
   if (process.env.EMAIL_SERVER_SECURE === undefined && emailServerPort === 465) {
     emailServerSecure = true;
   }
 
-
   console.log(`Attempting to send email via Nodemailer. To: ${emailTo}, From (config): ${emailServerUser}, Host: ${emailServerHost}, Port: ${emailServerPort}, Secure: ${emailServerSecure}`);
-
 
   const transporter = nodemailer.createTransport({
     host: emailServerHost,
@@ -103,15 +99,15 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
     if (error instanceof Error) {
         const nodemailerError = error as any; 
         if (nodemailerError.code === 'ECONNREFUSED' || nodemailerError.code === 'ENOTFOUND' || nodemailerError.code === 'EHOSTUNREACH') {
-            errorMessage = `Could not connect to email server at ${emailServerHost}:${emailServerPort}. Please check server address, port, and network.`;
+            errorMessage = `Could not connect to email server at ${emailServerHost}:${emailServerPort}. Please check server address, port, and network settings in your hosting environment.`;
         } else if (nodemailerError.responseCode === 535 || nodemailerError.code === 'EAUTH' || (nodemailerError.message && nodemailerError.message.toLowerCase().includes('authentication'))) { 
-            errorMessage = 'Email server authentication failed. Please check your email credentials (EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD) in environment variables.';
+            errorMessage = 'Email server authentication failed. Please check your email credentials (EMAIL_SERVER_USER, EMAIL_SERVER_PASSWORD) in your hosting environment variables.';
         } else if (nodemailerError.code === 'ETIMEDOUT' || (error.message && error.message.toLowerCase().includes('timeout'))) {
             errorMessage = `The email server at ${emailServerHost} timed out. Please try again later or check server status.`;
         } else if (nodemailerError.code === 'EENVELOPE') {
             errorMessage = 'There was an issue with the email recipient or sender addresses. Please check them.';
         } else if (nodemailerError.code === 'ESOCKET') {
-             errorMessage = `A socket error occurred while connecting to ${emailServerHost}:${emailServerPort}. This could be a TLS/SSL issue or network problem. Ensure 'EMAIL_SERVER_SECURE' is set correctly.`;
+             errorMessage = `A socket error occurred while connecting to ${emailServerHost}:${emailServerPort}. This could be a TLS/SSL issue or network problem. Ensure 'EMAIL_SERVER_SECURE' is set correctly in your hosting environment.`;
         } else {
              errorMessage = `Failed to send email: ${error.message || 'Unknown Nodemailer error'}. Check server logs.`;
         }
@@ -120,3 +116,4 @@ export async function sendEmailAction(input: SendEmailInput): Promise<SendEmailR
     return { success: false, message: errorMessage };
   }
 }
+
