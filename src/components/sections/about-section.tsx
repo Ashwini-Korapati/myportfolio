@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap } from 'lucide-react';
 
 const education = [
@@ -43,14 +44,23 @@ export default function AboutSection() {
                 Education
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {education.map((edu, index) => (
-                <div key={index} className="p-4 border rounded-lg bg-background hover:bg-secondary/50 dark:hover:bg-secondary/30 transition-all duration-300 transform hover:scale-105 hover:shadow-md">
-                  <h3 className="text-lg font-semibold text-primary">{edu.institution}</h3>
-                  <p className="text-md text-foreground">{edu.degree} - {edu.year}</p>
-                  <p className="text-sm text-muted-foreground">{edu.grade}</p>
-                </div>
-              ))}
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {education.map((edu, index) => (
+                  <Card 
+                    key={index} 
+                    className="bg-background hover:bg-secondary/50 dark:hover:bg-secondary/30 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+                  >
+                    <CardHeader className="p-4 pb-2">
+                      <h3 className="text-lg font-semibold text-primary">{edu.institution}</h3>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 space-y-1">
+                      <p className="text-md text-foreground">{edu.degree} - {edu.year}</p>
+                      <p className="text-sm text-muted-foreground">{edu.grade}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -62,7 +72,9 @@ export default function AboutSection() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="p-4 border rounded-lg bg-background hover:bg-secondary/50 dark:hover:bg-secondary/30 transition-all duration-300 transform hover:scale-105 hover:shadow-md">
+              <div 
+                className="p-4 border rounded-lg bg-background hover:bg-secondary/50 dark:hover:bg-secondary/30 transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+              >
                 <h3 className="text-lg font-semibold text-primary">Python Full stack Development</h3>
                 <p className="text-md text-foreground">Besant Technologies</p>
                 <p className="text-sm text-muted-foreground">December 2022 – May 2023</p>
